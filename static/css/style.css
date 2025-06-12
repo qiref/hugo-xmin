@@ -22,10 +22,10 @@ hr {
   border-style: dashed;
   color: #ddd;
 }
-#TableOfContents, #TOC {
+/* #TableOfContents, #TOC {
   border: 1px solid #eee;
   border-radius: 5px;
-}
+} */
 
 /* pagination */
 .pagination { text-align: center; }
