@@ -1,18 +1,34 @@
 {{ partial "header.html" . }}
 
-{{if not .IsHome }}
+{{ if not .IsHome }}
 <h1>{{ .Title | markdownify }}</h1>
 {{ end }}
 
 {{ .Content }}
 
-<ul>
-  {{ $pages := .Pages }}
-  {{ if .IsHome }}{{ $pages = .Site.RegularPages }}{{ end }}
-  {{ range (where $pages "Section" "!=" "") }}
-  <li>
+{{ $pages := .Pages }}
+{{ $filteredPages := slice }}
+
+<!-- 动态调整页面显示逻辑 -->
+{{ if .IsHome }}
+  <!-- 首页只显示post文章 -->
+  {{ $pages = where site.RegularPages "Type" "==" "post" }}
+{{ else if eq .Section "note" }}
+  <!-- note页面只显示note文章 -->
+  {{ $pages = where .Pages "Type" "==" "note" }}
+{{ else }}
+  <!-- 其他页面保持默认 -->
+  {{ $pages = where .Pages "Section" "!=" "" }}
+{{ end }}
+
+<ul class="post-list">
+  {{ range $pages.ByDate.Reverse }}
+  <li class="{{ .Type }}-item">
     <span class="date">{{ .Date.Format "2006/01/02" }}</span>
     <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
+    {{ if eq .Type "note" }}
+      <span class="note-badge">📝</span>
+    {{ end }}
   </li>
   {{ end }}
 </ul>
